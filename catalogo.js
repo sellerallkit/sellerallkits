@@ -128,7 +128,7 @@ const CATALOGO = {
     // ── MONZA
     { n:"Monza", c1:"#d0021b", c2:"#ffffff", tessuto:"",
       maglia:    { img:"", prezzo:null, desc:"", offline:false },
-      pantaloni: { img:"", prezzo:null, desc:"", offline:false },
+      pantaloni: { img:"pantalonemonza", prezzo:58.5, desc:"", offline:false },
       completo:  { img:"", prezzo:null, desc:"", offline:false },
     },
 
