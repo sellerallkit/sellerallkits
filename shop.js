@@ -1378,7 +1378,12 @@ PRODUCTS.push(...TEAMS.map((t,i) => teamItem(t,i,"Completo")));
 TEAMS.forEach((t,i) => PRODUCTS.push(teamItem(t,i,"Solo maglia"), teamItem(t,i,"Solo pantaloni")));
 const SIZES = ["S","M","L","XL","XXL"], CATS = ["Tutti","Calcio","F1","NBA","Tute"];
 // ==========================
-const $ = s => document.querySelector(s);
+// Se nell'index.html manca qualche elemento (es. file vecchio) il sito continua a funzionare lo stesso
+const NOEL = () => new Proxy({style:{}, classList:{toggle(){},add(){},remove(){},contains:()=>false}, parentElement:{style:{}}, dataset:{}},
+  {get:(t,k) => k in t ? t[k] : "", set:() => true});
+const $ = s => document.querySelector(s) || NOEL();
+// Se c'è un errore nel codice lo mostra in alto, così si capisce cosa non va
+addEventListener("error", e => {const b = document.createElement("div"); b.style.cssText = "position:fixed;z-index:2147483647;left:0;right:0;top:0;background:#b91c1c;color:#fff;padding:10px 14px;font:13px monospace"; b.textContent = "Errore shop.js: " + e.message + " (riga " + e.lineno + ")"; document.body.appendChild(b)});
 const fmt = n => n.toFixed(2).replace(".", ",") + " €";
 let q = "", so = "";
 let cart = [], kind = "Completo", cat = "Tutti", team = "Tutte", lg = "Tutte";
