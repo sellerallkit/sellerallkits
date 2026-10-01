@@ -1,9 +1,35 @@
+// ═══════════════════════════════════════════════════════════════
+//  333 SPORT STORE — shop.js
+//  1) IMPOSTAZIONI   2) COME SI COMPILA   3) CATALOGO (Calcio, F1, NBA, Tute)
+//  4) ARTICOLI SINGOLI   5) CODICE (non serve toccarlo)
+// ═══════════════════════════════════════════════════════════════
 
 // ═══ 1) IMPOSTAZIONI ═══
 const WHATSAPP = "393272792246"; // numero con prefisso, senza +
-const NEED_PRICE = true;
+const NEED_PRICE = true;         // true = online solo con immagine E prezzo | false = basta l'immagine
 
+// ═══ 2) COME SI COMPILA ═══
+// Ogni squadra ha 3 sezioni: maglia, pantaloni, completo.
+//   Calcio: maglia / pantaloncini / completo      F1: maglia / pantaloni / completo
+//   NBA:    canotta / shorts / completo           Tute: giacca / pantalone / tuta completa
+// Ogni sezione ha:
+//   img      nome del file immagine, SENZA estensione, nella stessa cartella di index.html (es. "intermaglia")
+//   prezzo   prezzo in euro (es. 59.9). null = non impostato
+//   desc     descrizione che compare nella scheda ("" = testo automatico)
+//   offline  true = Terminato a mano | false = online
+// Un articolo è ONLINE solo se ha img + prezzo e offline è false. Altrimenti mostra "Terminato".
+// Ogni sezione è indipendente: la maglia può essere online anche se i pantaloni no.
+// "tessuto" vale per tutti e tre gli articoli della squadra (es. "100% cotone verificato").
+//
+// ESEMPIO (Inter):
+//   { n:"Inter", c1:"#0a3a8c", c2:"#111111", tessuto:"100% cotone verificato",
+//     maglia:    { img:"intermaglia",    prezzo:59.9, desc:"Maglia Inter nerazzurra…",   offline:false },
+//     pantaloni: { img:"interpantaloni", prezzo:34.9, desc:"Pantaloncini Inter neri…",   offline:false },
+//     completo:  { img:"intermaglia",    prezzo:89.9, desc:"Completo Inter…",            offline:false },
+//   },
+// Per aggiungere una squadra copia un blocco, cambia nome e colori (c1, c2) e incollalo nel gruppo giusto.
 
+// ═══ 3) CATALOGO ═══
 const CATALOGO = {
   // ████████████████████ CALCIO ████████████████████ (maglia, pantaloncini, completo)
   Calcio: {
@@ -97,8 +123,8 @@ const CATALOGO = {
 
     // ── MONZA
     { n:"Monza", c1:"#d0021b", c2:"#ffffff", tessuto:"",
-      maglia:    { img:"pantalonemonza", prezzo:null, desc:"", offline:false },
-      pantaloni: { img:"pantalonemonza", prezzo:40,5, desc:"test", offline:false },
+      maglia:    { img:"", prezzo:null, desc:"", offline:false },
+      pantaloni: { img:"", prezzo:null, desc:"", offline:false },
       completo:  { img:"", prezzo:null, desc:"", offline:false },
     },
 
