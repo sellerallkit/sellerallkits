@@ -13,7 +13,9 @@ const DATA = (typeof CATALOGO !== "undefined" && CATALOGO) || {};
 const EXTRA = (typeof ALTRI !== "undefined" && Array.isArray(ALTRI)) ? ALTRI : [];
 if (typeof CATALOGO === "undefined") avviso("catalogo.js non si carica o contiene un errore: controlla virgole, parentesi e virgolette (o che il file sia nella stessa cartella).");
 const num = v => {const n = parseFloat(String(v == null ? "" : v).replace(",", ".")); return isFinite(n) && n > 0 ? n : 0};
-const nomeImg = v => String(v || "").trim().replace(/\.(png|jpe?g|webp|gif)$/i, "");
+const nomeImg = v => String(v || "").trim();
+const hasExt = n => /\.(png|jpe?g|webp|gif)$/i.test(n);
+const src0 = n => hasExt(n) ? n : n + ".png";
 const NOMI = {
   Calcio:{c:"Completo",m:"Maglia",p:"Pantaloni",dc:"Maglia + pantaloncini"},
   F1:{c:"Completo",m:"Maglia",p:"Pantaloni",dc:"Maglia + pantaloni"},
@@ -75,14 +77,14 @@ function renderFilters(){
 }
 function rows(){["kf","lf","tf"].forEach(id => {const el = $("#"+id); el.parentElement.style.display = el.innerHTML ? "" : "none"})}
 const EXT = ["png","jpg","jpeg","webp"];
-function imgNext(el){const i=+el.dataset.i+1;if(i<EXT.length){el.dataset.i=i;el.src=el.dataset.img+"."+EXT[i]}else{el.outerHTML=el.dataset.fb}}
+function imgNext(el){if(hasExt(el.dataset.img)){el.outerHTML=el.dataset.fb;return}const i=+el.dataset.i+1;if(i<EXT.length){el.dataset.i=i;el.src=el.dataset.img+"."+EXT[i]}else{el.outerHTML=el.dataset.fb}}
 function renderGrid(){
   const L = list(), n = L.length;
   $("#rc").textContent = (q ? `${n} risultat${n===1?"o":"i"} per «${q}»` : `${n} articol${n===1?"o":"i"}`);
   if (!n) { $("#pg").innerHTML = '<p class="empty">Nessun articolo trovato. <button class="chip sm" data-reset="1" type="button">Azzera filtri</button></p>'; return; }
   $("#pg").innerHTML = L.map(p => `
   <article class="pr${p.ok?"":" soldout"}">
-    <div class="pp${p.ok?"":" out"}" data-open="${p.id}" style="background:linear-gradient(145deg,${p.c1}33,${p.c2}18)"><button class="ib" data-open="${p.id}" type="button" aria-label="Informazioni su ${p.name}" title="Informazioni">i</button>${!p.ok?'<span class="pt out">TERMINATI</span>':p.tag?`<span class="pt">${p.tag}</span>`:""}${p.img?`<img src="${p.img}.png" data-img="${p.img}" data-i="0" data-fb='${art(p)}' alt="${p.name}" onerror="imgNext(this)">`:art(p)}</div>
+    <div class="pp${p.ok?"":" out"}" data-open="${p.id}" style="background:linear-gradient(145deg,${p.c1}33,${p.c2}18)"><button class="ib" data-open="${p.id}" type="button" aria-label="Informazioni su ${p.name}" title="Informazioni">i</button>${!p.ok?'<span class="pt out">TERMINATI</span>':p.tag?`<span class="pt">${p.tag}</span>`:""}${p.img?`<img src="${src0(p.img)}" data-img="${p.img}" data-i="0" data-fb='${art(p)}' alt="${p.name}" loading="lazy" decoding="async" onerror="imgNext(this)">`:art(p)}</div>
     <div class="pi"><div><div class="pn" data-open="${p.id}">${p.name}</div><div class="pd">${p.cat} · ${p.desc}</div><div class="pd">${info(p).tess}</div></div>
       <div class="prow"><span class="pv">${fmt(p.price)}</span>
         <select id="s${p.id}" aria-label="Taglia ${p.name}"${p.ok?"":" disabled"}>${SIZES.map(s=>`<option${s==="L"?" selected":""}>${s}</option>`).join("")}</select></div>
@@ -130,7 +132,7 @@ function info(p){
   }
   return {desc: p.d || desc, tess: p.tess || tess, vest, inc, cura: CURA};
 }
-function pic(p){return p.img ? `<img src="${p.img}.png" data-img="${p.img}" data-i="0" data-fb='${art(p)}' alt="${p.name}" onerror="imgNext(this)">` : art(p)}
+function pic(p){return p.img ? `<img src="${src0(p.img)}" data-img="${p.img}" data-i="0" data-fb='${art(p)}' alt="${p.name}" onerror="imgNext(this)">` : art(p)}
 function openP(id){
   const p = find(id); if (!p) return closeP(true);
   const i = info(p), sib = p.base ? PRODUCTS.filter(x => x.base === p.base) : [];
