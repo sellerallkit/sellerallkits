@@ -20,7 +20,7 @@ const NEED_PRICE = true;
 // Esempio: {n:"Inter",...,price:89.9,pm:59.9,pp:34.9}. Se mancano si usano 84,90 € e i prezzi calcolati.
 // Testi scheda (facoltativi): d = descrizione, tess = tessuto.
 const TEAMS = [
-   {n:"Atalanta",c1:"#0a3a8c",c2:"#111111",lg:"Serie A",img:"magliaatalanta",price:89.9,pm:59.9,pp:34.9,tess:"100% cotone verificato",d:"Maglia Atalanta nei colori Nero e azzurro , in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni."},
+   {n:"Atalanta",c1:"#0a3a8c",c2:"#111111",lg:"Serie A",img:"magliatalanta",price:89.9,pm:59.9,pp:34.9,tess:"100% cotone verificato",d:"Maglia Atalanta nei colori Nero e azzurro , in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni."},
   {n:"Bologna",c1:"#0a3a8c",c2:"#111111",lg:"Serie A",img:"magliabologna",price:89.9,pm:59.9,pp:34.9,tess:"100% cotone verificato",d:"Maglia Bologna nei colori Blu rosso, in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni."},
   {n:"Cagliari",c1:"#0a3a8c",c2:"#111111",lg:"Serie A",img:"magliacagliari",price:89.9,pm:59.9,pp:34.9,tess:"100% cotone verificato",d:"Maglia Cagliari nei colori Rosso blu, in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni."},
   {n:"Como",c1:"#0a3a8c",c2:"#111111",lg:"Serie A",img:"magliacomo",price:89.9,pm:59.9,pp:34.9,tess:"100% cotone verificato",d:"Maglia Como nei colori bianca azzurra, in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni."},
