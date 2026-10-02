@@ -216,3 +216,14 @@ renderFilters(); renderGrid(); renderCart();
 addEventListener("hashchange", route); route();
 document.addEventListener("input", e => {if (e.target.id === "q") {q = e.target.value.trim(); $("#qx").hidden = !e.target.value; renderGrid()}});
 document.addEventListener("change", e => {if (e.target.id === "so") {so = e.target.value; renderGrid()}});
+
+// Modalità giorno / notte
+(function(){
+  const r = document.documentElement, b = document.getElementById("themeBtn");
+  if (!b) return;
+  b.addEventListener("click", () => {
+    const t = r.dataset.theme === "light" ? "dark" : "light";
+    r.dataset.theme = t;
+    try {localStorage.setItem("tema", t)} catch(e) {}
+  });
+})();
