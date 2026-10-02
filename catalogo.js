@@ -247,9 +247,9 @@ const CATALOGO = {
 
     // ── BARCELLONA
     { n:"Barcellona", c1:"#a50044", c2:"#004d98", tessuto:"",
-      maglia:    { img:"magliabarcellona", prezzo:59.9, desc:"", offline:false },
+      maglia:    { img:"", prezzo:59.9, desc:"", offline:false },
       pantaloni: { img:"pantaloni/barcellona", prezzo:34.9, desc:"", offline:false },
-      completo:  { img:"magliabarcellona", prezzo:89.9, desc:"", offline:false },
+      completo:  { img:"'completo/arcellona", prezzo:89.9, desc:"", offline:false },
     },
 
     // ── REAL MADRID
