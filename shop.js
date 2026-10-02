@@ -40,11 +40,11 @@ function teamItem(t, i, kind){
   return {id:(100+i)*(kind==="Completo"?1:10)+({"Solo maglia":1,"Solo pantaloni":2}[kind]||0),
     cat:t.cat, team:t.n, lg:t.lg, kind, base:100+i, name:w+" "+t.n, desc:kind==="Completo"?N.dc:kind,
     price, c1:t.c1, c2:t.c2, img:img||undefined, imgs:percorsi(img, CFG.cartelle[KEYS[kind]]), d:String(s.desc||"").trim()||undefined, tess:String(t.tessuto||"").trim()||undefined,
-    ok:!s.offline && !!img && (!CFG.servePrezzo || !!pr)};
+    ok:true};
 }
 const PRODUCTS = EXTRA.filter(a => a && a.name && NOMI[a.cat]).map((a,j) => ({id:1+j, cat:a.cat, kind:"Completo", name:a.name, desc:a.desc||"", price:num(a.prezzo),
   c1:a.c1||"#1f2937", c2:a.c2||"#00f0ff", img:nomeImg(a.img)||undefined, imgs:percorsi(nomeImg(a.img), CFG.cartelle.altri), d:a.d||undefined, tess:a.tessuto||undefined,
-  ok:!a.offline && !!nomeImg(a.img) && (!CFG.servePrezzo || !!num(a.prezzo))}));
+  ok:true}));
 PRODUCTS.push(...TEAMS.map((t,i) => teamItem(t,i,"Completo")));
 TEAMS.forEach((t,i) => PRODUCTS.push(teamItem(t,i,"Solo maglia"), teamItem(t,i,"Solo pantaloni")));
 const SIZES = ["S","M","L","XL","XXL"], CATS = ["Tutti","Calcio","F1","NBA","Tute"];
