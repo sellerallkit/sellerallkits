@@ -1,7 +1,4 @@
-// ═══════════════════════════════════════════════════════════════
-//  333 SPORT STORE — shop.js  (CODICE: non serve modificarlo)
-//  Prodotti, immagini, prezzi e descrizioni si cambiano in catalogo.js
-// ═══════════════════════════════════════════════════════════════
+// ══
 function avviso(msg){
   const b = document.createElement("div");
   b.style.cssText = "position:fixed;z-index:2147483647;left:0;right:0;top:0;background:#b91c1c;color:#fff;padding:10px 14px;font:13px/1.4 monospace";
@@ -66,9 +63,8 @@ function list(){
   if (!so) r = [...r.filter(p => p.ok), ...r.filter(p => !p.ok)];
   return r;
 }
-const ICON = {Tutti:"🛍️",Calcio:"⚽",F1:"🏎️",NBA:"🏀",Tute:"🧥"};
 function renderFilters(){
-  $("#flt").innerHTML = CATS.map(c => `<button class="chip${c===cat?" on":""}" data-c="${c}" type="button">${ICON[c]} ${c}</button>`).join("");
+  $("#flt").innerHTML = CATS.map(c => `<button class="chip${c===cat?" on":""}" data-c="${c}" type="button">${c}</button>`).join("");
   $("#kf").innerHTML = KC.includes(cat) ? TYPES.map(n => `<button class="chip${n===kind?" on":""}" data-k="${n}" type="button">${n}</button>`).join("") : "";
   const GR = [...new Set(TEAMS.filter(t => t.cat===cat).map(t => t.lg))], multi = GR.length > 1;
   $("#lf").innerHTML = multi ? ["Tutte",...GR].map(n => `<button class="chip sm${n===lg?" on":""}" data-l="${n}" type="button">${n}</button>`).join("") : "";
@@ -137,7 +133,7 @@ function openP(id){
   const p = find(id); if (!p) return closeP(true);
   const i = info(p), sib = p.base ? PRODUCTS.filter(x => x.base === p.base) : [];
   const rows = [["Tessuto",i.tess],["Vestibilità",i.vest],["Include",i.inc],["Cura",i.cura],["Taglie",SIZES.join(" · ")],["Spedizione","In 48 ore, gratis sopra 80 €"],["Cambio taglia","Entro 14 giorni"]];
-  $("#pd").innerHTML = `<div class="pdw"><button class="pdb" data-close="1" type="button">← Torna al catalogo</button>
+  $("#pd").innerHTML = `<div class="pdw"><button class="pdb" data-close="1" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Torna al catalogo</button>
   <div class="pdg"><div class="pdi${p.ok?"":" out"}" style="background:linear-gradient(145deg,${p.c1}33,${p.c2}18)">${pic(p)}</div>
   <div class="pdx"><div class="slb">${p.cat}${p.lg?" · "+p.lg:""}</div>
     <h2 class="st">${p.name}</h2><div class="pdp">${fmt(p.price)}</div>${p.ok?"":'<div class="pdo">Terminato</div>'}
@@ -180,7 +176,7 @@ document.addEventListener("keydown", e => {if(e.key==="Escape"){if($("#drawer").
 
 // Marquee + link WhatsApp
 const items = ["CALCIO","FORMULA 1","NBA","TUTE","SPEDIZIONE 48H","CAMBIO TAGLIA GRATIS"];
-const strip = items.map(i => `<span class="mq-i">${i}</span><span class="mq-s">◆</span>`).join("");
+const strip = items.map(i => `<span class="mq-i">${i}</span><span class="mq-s"></span>`).join("");
 $("#mq").innerHTML = strip + strip + strip + strip;
 const hi = wa("Ciao, ho una domanda sui vostri prodotti.");
 $("#waLink").href = hi; $("#fabWa").href = hi;
