@@ -1,18 +1,29 @@
-// ══
+// ═══════════════════════════════════════════════════════════════
+//  333 SPORT STORE — shop.js  (CODICE: non serve modificarlo)
+//  Prodotti, immagini, prezzi e descrizioni si cambiano in catalogo.js
+// ═══════════════════════════════════════════════════════════════
 function avviso(msg){
   const b = document.createElement("div");
   b.style.cssText = "position:fixed;z-index:2147483647;left:0;right:0;top:0;background:#b91c1c;color:#fff;padding:10px 14px;font:13px/1.4 monospace";
   b.textContent = msg; document.body.appendChild(b);
 }
 addEventListener("error", e => avviso("Errore: " + e.message + " (" + (e.filename||"").split("/").pop() + ", riga " + e.lineno + ")"));
-const CFG = {whatsapp:"393272792246", servePrezzo:true, ...(typeof IMPOSTAZIONI !== "undefined" ? IMPOSTAZIONI : {})};
+const CFG = {whatsapp:"393272792246", servePrezzo:true, cercaInRoot:true, ...(typeof IMPOSTAZIONI !== "undefined" ? IMPOSTAZIONI : {})};
+CFG.cartelle = {maglia:"maglia", pantaloni:"pantaloni", completo:"completo", altri:"altri", ...(CFG.cartelle || {})};
 const DATA = (typeof CATALOGO !== "undefined" && CATALOGO) || {};
 const EXTRA = (typeof ALTRI !== "undefined" && Array.isArray(ALTRI)) ? ALTRI : [];
 if (typeof CATALOGO === "undefined") avviso("catalogo.js non si carica o contiene un errore: controlla virgole, parentesi e virgolette (o che il file sia nella stessa cartella).");
 const num = v => {const n = parseFloat(String(v == null ? "" : v).replace(",", ".")); return isFinite(n) && n > 0 ? n : 0};
 const nomeImg = v => String(v || "").trim();
 const hasExt = n => /\.(png|jpe?g|webp|gif)$/i.test(n);
-const src0 = n => hasExt(n) ? n : n + ".png";
+// Percorsi da provare: prima la cartella della sezione (maglia/, pantaloni/, completo/), poi la cartella principale.
+// Con l'estensione scritta (es. "intermaglia.png") le richieste sono meno.
+function percorsi(name, folder){
+  if (!name) return [];
+  const exts = hasExt(name) ? [""] : [".png", ".jpg", ".jpeg", ".webp"];
+  const dirs = name.includes("/") ? [""] : [folder ? folder + "/" : "", ...(folder && CFG.cercaInRoot ? [""] : [])];
+  return [...new Set(dirs.flatMap(d => exts.map(e => d + name + e)))];
+}
 const NOMI = {
   Calcio:{c:"Completo",m:"Maglia",p:"Pantaloni",dc:"Maglia + pantaloncini"},
   F1:{c:"Completo",m:"Maglia",p:"Pantaloni",dc:"Maglia + pantaloni"},
@@ -28,11 +39,11 @@ function teamItem(t, i, kind){
   const w = kind==="Completo" ? N.c : kind==="Solo maglia" ? N.m : N.p;
   return {id:(100+i)*(kind==="Completo"?1:10)+({"Solo maglia":1,"Solo pantaloni":2}[kind]||0),
     cat:t.cat, team:t.n, lg:t.lg, kind, base:100+i, name:w+" "+t.n, desc:kind==="Completo"?N.dc:kind,
-    price, c1:t.c1, c2:t.c2, img:img||undefined, d:String(s.desc||"").trim()||undefined, tess:String(t.tessuto||"").trim()||undefined,
+    price, c1:t.c1, c2:t.c2, img:img||undefined, imgs:percorsi(img, CFG.cartelle[KEYS[kind]]), d:String(s.desc||"").trim()||undefined, tess:String(t.tessuto||"").trim()||undefined,
     ok:!s.offline && !!img && (!CFG.servePrezzo || !!pr)};
 }
 const PRODUCTS = EXTRA.filter(a => a && a.name && NOMI[a.cat]).map((a,j) => ({id:1+j, cat:a.cat, kind:"Completo", name:a.name, desc:a.desc||"", price:num(a.prezzo),
-  c1:a.c1||"#1f2937", c2:a.c2||"#00f0ff", img:nomeImg(a.img)||undefined, d:a.d||undefined, tess:a.tessuto||undefined,
+  c1:a.c1||"#1f2937", c2:a.c2||"#00f0ff", img:nomeImg(a.img)||undefined, imgs:percorsi(nomeImg(a.img), CFG.cartelle.altri), d:a.d||undefined, tess:a.tessuto||undefined,
   ok:!a.offline && !!nomeImg(a.img) && (!CFG.servePrezzo || !!num(a.prezzo))}));
 PRODUCTS.push(...TEAMS.map((t,i) => teamItem(t,i,"Completo")));
 TEAMS.forEach((t,i) => PRODUCTS.push(teamItem(t,i,"Solo maglia"), teamItem(t,i,"Solo pantaloni")));
@@ -72,15 +83,23 @@ function renderFilters(){
   rows();
 }
 function rows(){["kf","lf","tf"].forEach(id => {const el = $("#"+id); el.parentElement.style.display = el.innerHTML ? "" : "none"})}
-const EXT = ["png","jpg","jpeg","webp"];
-function imgNext(el){if(hasExt(el.dataset.img)){el.outerHTML=el.dataset.fb;return}const i=+el.dataset.i+1;if(i<EXT.length){el.dataset.i=i;el.src=el.dataset.img+"."+EXT[i]}else{el.outerHTML=el.dataset.fb}}
+const IMG_KO = {};
+function imgNext(el){
+  const p = find(+el.dataset.id) || {}, L = p.imgs || [], i = +el.dataset.i + 1;
+  if (i < L.length) {el.dataset.i = i; el.src = L[i]; return}
+  if (!IMG_KO[p.id]) {IMG_KO[p.id] = 1; console.warn("Immagine non trovata per «" + p.name + "». Provati:", L.join(" , "));
+    if (/[?&]debug/.test(location.search)) {let d = document.getElementById("imgdbg"); if (!d) {d = document.createElement("div"); d.id = "imgdbg";
+      d.style.cssText = "position:fixed;z-index:2147483647;left:0;right:0;bottom:0;max-height:40vh;overflow:auto;background:#7c2d12;color:#fff;padding:10px 14px;font:12px/1.5 monospace"; document.body.appendChild(d)}
+      d.textContent += "NON TROVATA: " + L[0] + "  (provati: " + L.join(", ") + ")\n"; d.style.whiteSpace = "pre-wrap"}}
+  el.outerHTML = el.dataset.fb;
+}
 function renderGrid(){
   const L = list(), n = L.length;
   $("#rc").textContent = (q ? `${n} risultat${n===1?"o":"i"} per «${q}»` : `${n} articol${n===1?"o":"i"}`);
   if (!n) { $("#pg").innerHTML = '<p class="empty">Nessun articolo trovato. <button class="chip sm" data-reset="1" type="button">Azzera filtri</button></p>'; return; }
   $("#pg").innerHTML = L.map(p => `
   <article class="pr${p.ok?"":" soldout"}">
-    <div class="pp${p.ok?"":" out"}" data-open="${p.id}" style="background:linear-gradient(145deg,${p.c1}33,${p.c2}18)"><button class="ib" data-open="${p.id}" type="button" aria-label="Informazioni su ${p.name}" title="Informazioni">i</button>${!p.ok?'<span class="pt out">TERMINATI</span>':p.tag?`<span class="pt">${p.tag}</span>`:""}${p.img?`<img src="${src0(p.img)}" data-img="${p.img}" data-i="0" data-fb='${art(p)}' alt="${p.name}" loading="lazy" decoding="async" onerror="imgNext(this)">`:art(p)}</div>
+    <div class="pp${p.ok?"":" out"}" data-open="${p.id}" style="background:linear-gradient(145deg,${p.c1}33,${p.c2}18)"><button class="ib" data-open="${p.id}" type="button" aria-label="Informazioni su ${p.name}" title="Informazioni">i</button>${!p.ok?'<span class="pt out">TERMINATI</span>':p.tag?`<span class="pt">${p.tag}</span>`:""}${p.img?`<img src="${p.imgs[0]}" data-id="${p.id}" data-i="0" data-fb='${art(p)}' alt="${p.name}" loading="lazy" decoding="async" onerror="imgNext(this)">`:art(p)}</div>
     <div class="pi"><div><div class="pn" data-open="${p.id}">${p.name}</div><div class="pd">${p.cat} · ${p.desc}</div><div class="pd">${info(p).tess}</div></div>
       <div class="prow"><span class="pv">${fmt(p.price)}</span>
         <select id="s${p.id}" aria-label="Taglia ${p.name}"${p.ok?"":" disabled"}>${SIZES.map(s=>`<option${s==="L"?" selected":""}>${s}</option>`).join("")}</select></div>
@@ -128,7 +147,7 @@ function info(p){
   }
   return {desc: p.d || desc, tess: p.tess || tess, vest, inc, cura: CURA};
 }
-function pic(p){return p.img ? `<img src="${src0(p.img)}" data-img="${p.img}" data-i="0" data-fb='${art(p)}' alt="${p.name}" onerror="imgNext(this)">` : art(p)}
+function pic(p){return p.img ? `<img src="${p.imgs[0]}" data-id="${p.id}" data-i="0" data-fb='${art(p)}' alt="${p.name}" onerror="imgNext(this)">` : art(p)}
 function openP(id){
   const p = find(id); if (!p) return closeP(true);
   const i = info(p), sib = p.base ? PRODUCTS.filter(x => x.base === p.base) : [];
