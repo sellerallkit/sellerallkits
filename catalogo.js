@@ -92,9 +92,9 @@ const CATALOGO = {
 
     // ── INTER
     { n:"Inter", c1:"#0a3a8c", c2:"#111111", tessuto:"100% cotone verificato",
-      maglia:    { img:"intermaglia", prezzo:59.9, desc:"Maglia Inter nei colori nerazzurri, in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni.", offline:false },
-      pantaloni: { img:"", prezzo:34.9, desc:"", offline:false },
-      completo:  { img:"intermaglia", prezzo:89.9, desc:"Maglia Inter nei colori nerazzurri, in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni.", offline:false },
+      maglia:    { img:"maglia/inter", prezzo:59.9, desc:"Maglia Inter nei colori nerazzurri, in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni.", offline:false },
+      pantaloni: { img:"pantalone/inter", prezzo:34.9, desc:"", offline:false },
+      completo:  { img:"completo/inter", prezzo:89.9, desc:"Maglia Inter nei colori nerazzurri, in 100% cotone verificato: morbida sulla pelle, naturale e resistente ai lavaggi. Ideale per tifare tutti i giorni.", offline:false },
     },
 
     // ── JUVENTUS
