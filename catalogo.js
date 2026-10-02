@@ -99,9 +99,9 @@ const CATALOGO = {
 
     // ── JUVENTUS
     { n:"Juventus", c1:"#f4f4f4", c2:"#111111", tessuto:"",
-      maglia:    { img:"magliajuve", prezzo:null, desc:"", offline:false },
-      pantaloni: { img:"", prezzo:null, desc:"", offline:false },
-      completo:  { img:"magliajuve", prezzo:null, desc:"", offline:false },
+      maglia:    { img:"maglia/juve", prezzo:null, desc:"", offline:false },
+      pantaloni: { img:"pantaloni/juve", prezzo:null, desc:"", offline:false },
+      completo:  { img:"completo/juve", prezzo:null, desc:"", offline:false },
     },
 
     // ── LAZIO
