@@ -189,7 +189,7 @@ document.addEventListener("click", e => {
   if (d.m){if(--cart[+d.m].q<=0)cart.splice(+d.m,1);renderCart()}
   if (t.id==="veil"||t.id==="closeCart")toggle(false);
   if (t.closest("#openCart"))toggle(true);
-  const q = t.closest(".x-faq-q"); if (q) q.parentElement.classList.toggle("open");
+  const fq = t.closest(".x-faq-q"); if (fq) fq.parentElement.classList.toggle("open");
 });
 document.addEventListener("keydown", e => {if(e.key==="Escape"){if($("#drawer").classList.contains("open"))toggle(false);else closeP()}});
 
