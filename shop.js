@@ -217,13 +217,32 @@ addEventListener("hashchange", route); route();
 document.addEventListener("input", e => {if (e.target.id === "q") {q = e.target.value.trim(); $("#qx").hidden = !e.target.value; renderGrid()}});
 document.addEventListener("change", e => {if (e.target.id === "so") {so = e.target.value; renderGrid()}});
 
-// Modalità giorno / notte
+// Modalità giorno / notte (crea da solo il pulsante se manca nella navbar)
 (function(){
-  const r = document.documentElement, b = document.getElementById("themeBtn");
-  if (!b) return;
+  const r = document.documentElement;
+  let t = r.dataset.theme;
+  if (!t) {try {t = localStorage.getItem("tema")} catch(e) {} t = t || "light"; r.dataset.theme = t}
+  let b = document.getElementById("themeBtn");
+  if (!b) {
+    const nav = document.querySelector("nav"), cart = document.getElementById("openCart");
+    if (!nav) return;
+    b = document.createElement("button");
+    b.id = "themeBtn"; b.className = "tgl"; b.type = "button";
+    b.setAttribute("aria-label", "Cambia modalità giorno/notte"); b.title = "Giorno / Notte";
+    b.innerHTML = '<svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+    if (cart && !cart.parentElement.classList.contains("nr")) {
+      const w = document.createElement("div"); w.className = "nr";
+      cart.parentNode.insertBefore(w, cart); w.appendChild(b); w.appendChild(cart);
+    } else if (cart) cart.parentElement.insertBefore(b, cart);
+    else nav.appendChild(b);
+  }
+  let m = document.querySelector('meta[name="theme-color"]');
+  if (!m) {m = document.createElement("meta"); m.name = "theme-color"; document.head.appendChild(m)}
+  const apply = () => {m.content = r.dataset.theme === "light" ? "#ffffff" : "#06060f"};
+  apply();
   b.addEventListener("click", () => {
-    const t = r.dataset.theme === "light" ? "dark" : "light";
-    r.dataset.theme = t;
-    try {localStorage.setItem("tema", t)} catch(e) {}
+    const n = r.dataset.theme === "light" ? "dark" : "light";
+    r.dataset.theme = n; apply();
+    try {localStorage.setItem("tema", n)} catch(e) {}
   });
 })();

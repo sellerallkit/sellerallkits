@@ -219,3 +219,21 @@ html[data-theme="light"] .shf{border-top-color:var(--gb)}
 html[data-theme="light"] .tgl .i-sun{display:none}
 html[data-theme="light"] .tgl .i-moon{display:block}
 html[data-theme="light"] .tgl{background:#fff}
+
+/* ═══ Mobile: navbar compatta con pulsante giorno/notte ═══ */
+@media(max-width:560px){
+  nav{padding:.7rem 1rem}
+  .nl{font-size:1.05rem;letter-spacing:.08em}
+  .nr{gap:.45rem}
+  .tgl{width:36px;height:36px}
+  .tgl svg{width:16px;height:16px}
+  nav .nsb{padding:.35rem .4rem .35rem .8rem;gap:.5rem;font-size:.68rem}
+}
+@media(max-width:360px){
+  .nl{font-size:.92rem;letter-spacing:.04em}
+  nav .nsb{padding:.3rem .35rem .3rem .65rem}
+}
+
+/* Ombra del carrello solo quando è aperto (evita la sfumatura grigia a destra) */
+html[data-theme="light"] #drawer{box-shadow:none}
+html[data-theme="light"] #drawer.open{box-shadow:-30px 0 80px -30px rgba(15,23,42,.35)}
