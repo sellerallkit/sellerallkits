@@ -371,3 +371,48 @@ html[data-theme="light"] .hb.on{background:#f43f5e;border-color:#f43f5e;color:#f
 .sec .con,.ctab{transition:opacity .7s ease,translate .7s cubic-bezier(.2,.8,.3,1)}
 #cfx{position:fixed;inset:0;z-index:2147483500;pointer-events:none}
 #sug button{position:static;transform:none;height:auto;border-radius:0;right:auto;top:auto;background:none;display:flex}
+
+/* ═══ Guida taglie ═══ */
+.tglink{display:inline-flex;align-items:center;gap:.4rem;background:none;border:0;padding:.3rem 0;color:var(--a);font:600 .82rem inherit;font-family:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;margin-bottom:.6rem}
+#tg{position:fixed;inset:0;z-index:2147483620;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+#tg[hidden]{display:none}
+.tgb{position:relative;width:min(460px,100%);max-height:92vh;overflow:auto;background:var(--bg2,#0b0b18);color:var(--tx);border:1px solid var(--gb);border-radius:22px 22px 0 0;padding:1.4rem 1.3rem calc(1.4rem + env(safe-area-inset-bottom,0px));animation:tgu .3s cubic-bezier(.2,.8,.3,1)}
+@keyframes tgu{from{transform:translateY(40px);opacity:0}}
+@media(min-width:600px){#tg{align-items:center}.tgb{border-radius:22px}}
+.tgb h3{font-size:1.2rem;margin:0 2.5rem .3rem 0}
+.tgs{font-size:.8rem;color:var(--mu2);line-height:1.5;margin:.3rem 0 1rem}
+.tgx{position:absolute;right:.9rem;top:.9rem;width:36px;height:36px;border-radius:50%;border:1px solid var(--gb);background:var(--gl);color:var(--tx);cursor:pointer}
+.tgf{display:flex;gap:.7rem}
+.tgf label{flex:1;display:flex;flex-direction:column;gap:.3rem;font-size:.72rem;color:var(--mu2)}
+.tgf input{height:48px;border-radius:12px;border:1px solid var(--gb);background:var(--bg);color:var(--tx);padding:0 .9rem;font:600 1.05rem inherit;font-family:inherit;min-width:0}
+.tgf input:focus{outline:0;border-color:var(--azz,#38bdf8)}
+.tgr{margin:1rem 0;padding:.9rem 1rem;border-radius:14px;border:1px dashed var(--gb);text-align:center;font-size:.88rem;color:var(--mu2)}
+.tgr.ok{border:1px solid var(--azz,#38bdf8);background:var(--ibo);color:var(--tx)}
+.tgr b{font-size:1.5rem;color:var(--a);margin:0 .2rem}
+.tgr button{margin-left:.5rem;padding:.45rem .8rem;border-radius:99px;border:0;background:var(--a);color:#fff;font:600 .78rem inherit;font-family:inherit;cursor:pointer}
+.tgt{border:1px solid var(--ibb);border-radius:14px;overflow:hidden;font-size:.85rem}
+.tgt>div{display:flex;justify-content:space-between;padding:.6rem 1rem;border-top:1px solid var(--ibb)}
+.tgt>div:first-child{border:0;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);background:var(--ibo)}
+.tgt>div.on{background:var(--a);color:#fff;font-weight:700}
+body.tg-lock{overflow:hidden}
+
+/* ═══ Come funziona ═══ */
+.stp{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.4rem;position:relative}
+.sp1{position:relative;padding:1.3rem 1.2rem;border-radius:18px;border:1px solid var(--ibb);background:var(--ibo);display:flex;flex-direction:column;gap:.45rem}
+.sp1 i{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:700 1rem 'JetBrains Mono',monospace;font-style:normal;color:#fff;background:linear-gradient(135deg,#38bdf8,var(--a2,#7b2fff));box-shadow:0 8px 20px -8px rgba(56,189,248,.8)}
+.sp1 b{font-size:1rem}.sp1 span{font-size:.84rem;line-height:1.5;color:var(--mu2)}
+html[data-theme="light"] .sp1{background:#fff;border:2px solid var(--azz)}
+@media(max-width:720px){.stp{grid-template-columns:1fr}.sp1{flex-direction:row;flex-wrap:wrap;align-items:center;gap:.3rem .9rem}.sp1 i{flex:none}.sp1 b{flex:1}.sp1 span{flex-basis:100%}}
+
+/* ═══ Statistiche ═══ */
+.sts{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;max-width:900px;margin:2rem auto 0;padding:0 1rem}
+.sts>div{text-align:center;padding:1rem .4rem;border-radius:16px;border:1px solid var(--ibb);background:var(--ibo)}
+.sts b{display:block;font:700 1.5rem 'JetBrains Mono',monospace;color:var(--a);font-variant-numeric:tabular-nums}
+.sts span{display:block;margin-top:.25rem;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mu2)}
+html[data-theme="light"] .sts>div{background:#fff;border:2px solid var(--azz)}
+@media(max-width:560px){.sts{grid-template-columns:repeat(2,1fr)}}
+
+/* ═══ Foto morbide ═══ */
+.pp img{opacity:0;transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.3,1)}
+.pp img.ld{opacity:1}
+.pp.out img.ld{opacity:.32}

@@ -47,6 +47,7 @@ const PRODUCTS = EXTRA.filter(a => a && a.name && NOMI[a.cat]).map((a,j) => ({id
   ok:true}));
 PRODUCTS.push(...TEAMS.map((t,i) => teamItem(t,i,"Completo")));
 TEAMS.forEach((t,i) => PRODUCTS.push(teamItem(t,i,"Solo maglia"), teamItem(t,i,"Solo pantaloni")));
+for (let i = PRODUCTS.length - 1; i >= 0; i--) if (PRODUCTS[i].cat === "Tute" && PRODUCTS[i].kind === "Solo maglia") PRODUCTS.splice(i, 1); // niente giacche
 const SIZES = ["S","M","L","XL","XXL"], CATS = ["Tutti","Calcio","F1","NBA","Tute"];
 // ===== OFFERTE (config in catalogo.js) =====
 const OFF = (typeof OFFERTE !== "undefined" && OFFERTE) || {attive:false};
@@ -87,8 +88,9 @@ function list(){
   return r;
 }
 function renderFilters(){
+  if (cat === "Tute" && kind === "Solo maglia") kind = "Completo";
   $("#flt").innerHTML = CATS.map(c => `<button class="chip${c===cat?" on":""}" data-c="${c}" type="button">${c==="Offerte"?"🔥 Offerte":c==="Preferiti"?"♥ Preferiti"+(FAV.size?" ("+FAV.size+")":""):c}</button>`).join("");
-  $("#kf").innerHTML = KC.includes(cat) ? TYPES.map(n => `<button class="chip${n===kind?" on":""}" data-k="${n}" type="button">${n}</button>`).join("") : "";
+  $("#kf").innerHTML = KC.includes(cat) ? TYPES.filter(n => !(cat === "Tute" && n === "Solo maglia")).map(n => `<button class="chip${n===kind?" on":""}" data-k="${n}" type="button">${n}</button>`).join("") : "";
   const GR = [...new Set(TEAMS.filter(t => t.cat===cat).map(t => t.lg))], multi = GR.length > 1;
   $("#lf").innerHTML = multi ? ["Tutte",...GR].map(n => `<button class="chip sm${n===lg?" on":""}" data-l="${n}" type="button">${n}</button>`).join("") : "";
   $("#tf").innerHTML = KC.includes(cat) && (!multi || lg!=="Tutte") ? ["Tutte",...TEAMS.filter(t => t.cat===cat && (!multi || t.lg===lg)).map(t => t.n)].map(n => `<button class="chip sm${n===team?" on":""}" data-t="${n}" type="button">${n}</button>`).join("") : "";
@@ -184,6 +186,7 @@ function openP(id){
     ${sib.length>1?`<div class="flt sub">${sib.map(x=>`<button class="chip sm${x.id===p.id?" on":""}" data-open="${x.id}" type="button">${x.kind} · ${fmt(x.price)}</button>`).join("")}</div>`:""}
     <p class="ss2">${i.desc}</p>
     <dl class="pds">${rows.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join("")}</dl>
+    <button class="tglink" data-guida="1" type="button">📏 Trova la tua taglia</button>
     <div class="prow"><select id="ds" aria-label="Taglia"${p.ok?"":" disabled"}>${SIZES.map(s=>`<option${s==="L"?" selected":""}>${s}</option>`).join("")}</select>
     ${p.ok?`<button class="bp" data-addd="${p.id}" type="button">Aggiungi al carrello</button>`:`<button class="bp" type="button" disabled>Terminato</button>`}</div>
     <a class="cl2" target="_blank" rel="noopener" href="${wa((p.ok?"Ciao, vorrei info su: ":"Ciao, vorrei sapere quando torna disponibile: ")+p.name+(p.ok?" ("+fmt(p.price)+")":""))}">${p.ok?"Chiedi info su WhatsApp":"Avvisami quando torna disponibile"}</a>
@@ -490,4 +493,62 @@ function renderRecent(){
       t < 90 ? requestAnimationFrame(f) : c.remove();
     })();
   };
+})();
+
+// ===== Guida taglie, come funziona, statistiche, immagini morbide =====
+(function(){
+  const d = document;
+  // --- Trova la tua taglia ---
+  d.body.insertAdjacentHTML("beforeend", `<div id="tg" hidden><div class="tgb" role="dialog" aria-modal="true" aria-label="Trova la tua taglia">
+    <button type="button" class="tgx" data-tgx="1" aria-label="Chiudi">✕</button>
+    <h3>Trova la tua taglia</h3><p class="tgs">Inserisci altezza e peso: ti diciamo la taglia consigliata.</p>
+    <div class="tgf"><label>Altezza (cm)<input id="tgh" type="number" inputmode="numeric" min="120" max="230" placeholder="175"></label>
+    <label>Peso (kg)<input id="tgw" type="number" inputmode="numeric" min="30" max="200" placeholder="70"></label></div>
+    <div id="tgr" class="tgr">Compila i due campi</div>
+    <div class="tgt"><div class="tgh2"><span>Taglia</span><span>Torace (cm)</span></div>
+      <div data-s="S"><span>S</span><span>88 – 94</span></div><div data-s="M"><span>M</span><span>94 – 100</span></div><div data-s="L"><span>L</span><span>100 – 106</span></div><div data-s="XL"><span>XL</span><span>106 – 112</span></div><div data-s="XXL"><span>XXL</span><span>112 – 118</span></div></div>
+    <p class="tgs">Misure indicative. Se sei tra due taglie prendi la più grande: il cambio è gratis entro 14 giorni.</p></div></div>`);
+  const tg = d.getElementById("tg"), H = d.getElementById("tgh"), W = d.getElementById("tgw"), R = d.getElementById("tgr");
+  let sug = "";
+  const calc = () => {
+    const h = +H.value, w = +W.value; tg.querySelectorAll("[data-s]").forEach(r => r.classList.remove("on"));
+    if (!(h >= 120 && w >= 30)) {R.textContent = "Compila i due campi"; R.classList.remove("ok"); sug = ""; return}
+    let i = w < 60 ? 0 : w < 72 ? 1 : w < 84 ? 2 : w < 96 ? 3 : 4;
+    if (h > 187) i++; if (h < 165) i--; i = Math.max(0, Math.min(4, i)); sug = SIZES[i];
+    tg.querySelector('[data-s="' + sug + '"]').classList.add("on");
+    const ds = d.getElementById("ds");
+    R.classList.add("ok"); R.innerHTML = `Taglia consigliata: <b>${sug}</b>` + (ds ? ` <button type="button" data-usa="1">Usa ${sug}</button>` : "");
+  };
+  H.oninput = calc; W.oninput = calc;
+  const close = () => {tg.hidden = true; d.body.classList.remove("tg-lock")};
+  d.addEventListener("click", e => {
+    if (e.target.closest("[data-guida]")) {tg.hidden = false; d.body.classList.add("tg-lock"); setTimeout(() => H.focus({preventScroll: true}), 50); return}
+    if (e.target.closest("[data-tgx]") || e.target === tg) return close();
+    if (e.target.closest("[data-usa]")) {const ds = d.getElementById("ds"); if (ds && sug) {ds.value = sug; window.toastMsg && window.toastMsg("Taglia " + sug + " selezionata")} close()}
+  });
+  d.addEventListener("keydown", e => {if (e.key === "Escape" && !tg.hidden) close()});
+  const ss = d.querySelector("#catalogo .ss2"); if (ss) ss.insertAdjacentHTML("afterend", '<button class="tglink" data-guida="1" type="button" style="margin:-.6rem 0 1.2rem">📏 Non sai la taglia? Trovala in 10 secondi</button>');
+
+  // --- Come funziona (3 passi) ---
+  const faq = d.getElementById("faq");
+  if (faq) faq.insertAdjacentHTML("beforebegin", `<section class="sec" id="come"><div class="con"><div class="slb">Come funziona</div><h2 class="st">Ordinare in 3 passi</h2>
+    <div class="stp"><div class="sp1"><i>1</i><b>Scegli</b><span>Completo, maglia o pantaloni: scegli squadra e taglia.</span></div>
+    <div class="sp1"><i>2</i><b>Ordina su WhatsApp</b><span>Premi "Ordina": ci arriva il riepilogo già pronto e ti confermiamo.</span></div>
+    <div class="sp1"><i>3</i><b>Ricevi in 48 ore</b><span>Spedizione gratis sopra 80 €. Se non calza, cambio taglia entro 14 giorni.</span></div></div></div></section><div class="div"></div>`);
+
+  // --- Striscia statistiche con conteggio animato ---
+  const mq = d.querySelector(".mq");
+  if (mq) {
+    mq.insertAdjacentHTML("afterend", `<div class="sts"><div><b data-n="${PRODUCTS.length}">0</b><span>Articoli</span></div><div><b data-n="48" data-x="h">0</b><span>Spedizione</span></div><div><b data-n="14" data-x=" gg">0</b><span>Cambio taglia</span></div><div><b data-n="80" data-x=" €">0</b><span>Spedizione gratis da</span></div></div>`);
+    const run = el => {const n = +el.dataset.n, x = el.dataset.x || "", t0 = performance.now(); (function f(t){const k = Math.min(1, (t - t0) / 1100), v = Math.round(n * (1 - Math.pow(1 - k, 3))); el.textContent = v + x; if (k < 1) requestAnimationFrame(f)})(t0)};
+    const els = d.querySelectorAll(".sts b");
+    if ("IntersectionObserver" in window) {const io = new IntersectionObserver(es => es.forEach(en => {if (en.isIntersecting) {io.unobserve(en.target); run(en.target)}}), {threshold: .6}); els.forEach(b => io.observe(b))}
+    else els.forEach(b => b.textContent = b.dataset.n + (b.dataset.x || ""));
+  }
+
+  // --- Foto che compaiono morbide ---
+  const mark = () => d.querySelectorAll(".pp img:not(.ld)").forEach(i => {if (i.complete && i.naturalWidth) i.classList.add("ld")});
+  d.addEventListener("load", e => {if (e.target.tagName === "IMG") e.target.classList.add("ld")}, true);
+  let rq = 0; new MutationObserver(() => {cancelAnimationFrame(rq); rq = requestAnimationFrame(mark)}).observe(d.body, {childList: true, subtree: true});
+  mark(); setInterval(() => d.querySelectorAll(".pp img:not(.ld)").forEach(i => i.classList.add("ld")), 3000);
 })();
