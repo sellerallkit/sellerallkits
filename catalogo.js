@@ -247,9 +247,9 @@ const CATALOGO = {
 
     // ── BARCELLONA
     { n:"Barcellona", c1:"#a50044", c2:"#004d98", tessuto:"",
-      maglia:    { img:"", prezzo:59.9, desc:"", offline:false },
+      maglia:    { img:"magliabarcellona", prezzo:59.9, desc:"", offline:false },
       pantaloni: { img:"pantaloni/barcellona", prezzo:34.9, desc:"", offline:false },
-      completo:  { img:"'completo/arcellona", prezzo:89.9, desc:"", offline:false },
+      completo:  { img:"magliabarcellona", prezzo:89.9, desc:"", offline:false },
     },
 
     // ── REAL MADRID
@@ -1356,3 +1356,20 @@ const CATALOGO = {
 const ALTRI = [
   // { cat:"F1", name:"Cappellino Ferrari", desc:"Cappellino team", img:"", prezzo:null, tessuto:"", d:"", offline:false },
 ];
+
+
+// ═══ 4) OFFERTE ═══
+// COME SCEGLIERE COSA VA IN OFFERTA (il modo facile):
+//   1) apri il sito aggiungendo ?offerte alla fine dell'indirizzo
+//   2) spunta gli articoli, scegli lo sconto e la data di fine
+//   3) premi "Copia codice" e incolla qui sotto al posto di tutto il blocco const OFFERTE = { ... };
+// Per spegnere tutte le offerte: attive:false. Dopo la data "fino" finiscono da sole.
+const OFFERTE = {
+  attive: true,
+  titolo: "Offerte del momento",
+  fino: "2026-10-15T23:59",      // scadenza AAAA-MM-GGTHH:MM (es. "2026-10-20T23:59"). Vuoto = senza scadenza
+  tutto: 0,
+  categorie: { Calcio: 5, F1: 0, NBA: 0, Tute: 0 },
+  squadre: { },
+  articoli: { }
+};
